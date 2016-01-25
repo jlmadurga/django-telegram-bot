@@ -1,0 +1,1 @@
+{% load telegrambot_filters %}{% autoescape off %}{{ authors |keyboard_field:"command=author&field=name&per_line=1"}}{% endautoescape %}
