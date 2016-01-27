@@ -22,4 +22,3 @@ SECRET_KEY = "shds8dfyhskdfhskdfhskdf"
 
 TELEGRAM_BOT_COMMANDS_CONF = "tests.commands"
 TELEGRAM_BOT_TOKEN = "174446943:AAEcMXep4Uc51sAkYcTJC7vEoLmmxwnQgcc"
-TELEGRAM_BOT_TASKS = True # just to boost tests

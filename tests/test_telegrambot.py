@@ -7,13 +7,16 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from telegram.replykeyboardhide import ReplyKeyboardHide
 from telegrambot import conf
+from django.core.management import call_command
+from django.utils.six import StringIO
+from django.core.management.base import CommandError
 try:
     from unittest import mock
 except ImportError:
     import mock  # noqa
 
 class BaseTestBot(TestCase):
-    webhook_url = reverse('telegram-webhook')
+    webhook_url = reverse('telegrambot:webhook', kwargs={'token': conf.TELEGRAM_BOT_TOKEN})
 
     def setUp(self):
         self.update = factories.UpdateFactory()
@@ -130,9 +133,14 @@ class TestBotCommands(BaseTestBot):
                            }
     
     def test_webhook(self):
-        #  change conf to set webhook
-        conf.TELEGRAM_BOT_TASKS = False
-        self._test_command_ok(self.start)
+        out = StringIO()
+        call_command('set_webhook', stdout=out)
+        self.assertIn('Success:', out.getvalue())
+        
+    def test_webhook_no_token(self):
+        conf.TELEGRAM_BOT_TOKEN = None
+        out = StringIO()
+        self.assertRaises(CommandError, call_command, 'set_webhook', stdout=out)
 
     def test_start(self):
         self._test_command_ok(self.start)
