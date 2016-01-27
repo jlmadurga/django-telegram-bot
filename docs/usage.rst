@@ -11,7 +11,7 @@ After creating a bot in Telegram Platform set token received in settings::
 
 Add webhook url to your urlpatterns::
 
-	url(r'^telegrambot/', include('telegrambot.urls'), name="telegrambot")	
+	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")	
 
 Define whe file where commands will be defined in ``commandspatterns`` variable, analogue to django ``urls``
 and ``ROOT_URLCONF``::
@@ -22,6 +22,13 @@ Set bot commands handlers is very easy just define a module with ``commandspatte
 ('command', command_view)::
 
 	commandspatterns = [('start', StartView.as_command_view())
+	
+Use command  ``set_webhook`` to specify the url to receive the incoming updates via webhook::
+
+	$ python manage.py set_webhook
+	
+To set the webhook for telegram you need ``django.contrib.sites`` installed, ``SITE_ID`` configured in settings and
+with it correct value in the DB.
 	
 Command views responses with Telegram messages to the user who send the command with a text message and keyboard.
 Compound with a context and a template. The way it is handled is analogue to Django views. 

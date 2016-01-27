@@ -15,7 +15,7 @@ class WebhookView(APIView):
         super(WebhookView, self).__init__(*args, **kwargs)        
         self.bot = Bot()
     
-    def post(self, request):
+    def post(self, request, token):
         serializer = UpdateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

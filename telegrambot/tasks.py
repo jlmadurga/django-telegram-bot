@@ -10,7 +10,7 @@ class BotTask(Task):
     @property
     def bot(self):
         if self._bot is None:
-            self._bot = Bot(tasks=True)
+            self._bot = Bot()
         return self._bot
     
     @property

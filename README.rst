@@ -46,7 +46,7 @@ Install django-telegram-bot::
     
 Add ``telegrambot`` and ``rest_framework`` to your ``INSTALLED_APPS``, and run::
 
-	python manage.py migrate
+	$ python manage.py migrate
 	
 After creating a bot in Telegram Platform set token received::
 
@@ -54,7 +54,7 @@ After creating a bot in Telegram Platform set token received::
 	
 Add webhook url to your urlpatterns::
 
-	url(r'^telegrambot/', include('telegrambot.urls'), name="telegrambot")	
+	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")	
 
 Define whe file where commands will be defined in ``commandspatterns`` variable, analogue to django ``urls``
 and ``ROOT_URLCONF``::
@@ -65,6 +65,14 @@ Set bot commands handlers is very easy just define a module with ``commandspatte
 ('command', command_view)::
 
 	commandspatterns = [('start', StartView.as_command_view())	
+	
+Use command  ``set_webhook`` to specify the url to receive the incoming updates via webhook::
+
+	$ python manage.py set_webhook
+	
+	
+To set the webhook for telegram you need ``django.contrib.sites`` installed, ``SITE_ID`` configured 
+in settings and with it correct value in the DB.
 	
 Command views responses with Telegram messages to the user who send the command with a text message and keyboard.
 Compound with a context and a template. The way it is handled is analogue to Django views.  Visits docs for more 
@@ -78,6 +86,10 @@ Features
 * Text responses and keyboards. 
 * Media messages not supported.
 * Only Markup parse mode.
+
+.. image:: https://raw.github.com/jlmadurga/django-oscar-telegram-bot/master/docs/imgs/list_commands.png
+
+.. image:: https://raw.github.com/jlmadurga/django-oscar-telegram-bot/master/docs/imgs/categories.png
 
 Running Tests
 --------------
