@@ -34,7 +34,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='django-telegram-bot',
-    version=version,
+    version="0.1.0",
     description="""Django app to write Telegram bots""",
     long_description=readme + '\n\n' + history,
     author='Juan Madurga',
