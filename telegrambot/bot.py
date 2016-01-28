@@ -1,5 +1,4 @@
 from telegram import Updater
-import time
 import importlib
 from django.core.exceptions import ImproperlyConfigured
 from telegrambot import conf
@@ -20,8 +19,3 @@ class Bot(object):
    
     def process_update(self, update):
         self.updater.dispatcher.processUpdate(update)
-        
-    def get_updates(self, timeout=2):
-        self.updater.start_polling(poll_interval=0.1, timeout=1)
-        time.sleep(timeout)  # wait for timeout to stop polling
-        self.updater.stop()
