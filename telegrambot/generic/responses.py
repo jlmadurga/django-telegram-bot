@@ -17,6 +17,8 @@ class TemplateResponse(object):
             self.ctx = ctx
         
     def render(self):
+        if not self.template_name:
+            return None
         try:
             logger.debug("Template name: %s" % self.template_name)
             template = get_template(self.template_name)      
@@ -28,18 +30,14 @@ class TemplateResponse(object):
         return template.render(ctx)
     
 class TextResponse(TemplateResponse):
-    text_template_file = 'telegrambot/messages/command_%s_text.txt'
 
-    def __init__(self, template_code, ctx=None):
-        template_name = self.text_template_file % template_code
-        super(TextResponse, self).__init__(template_name, ctx)
+    def __init__(self, template_text, ctx=None):
+        super(TextResponse, self).__init__(template_text, ctx)
         
 class KeyboardResponse(TemplateResponse):
-    keyboard_template_file = 'telegrambot/messages/command_%s_keyboard.txt'
     
-    def __init__(self, template_code, ctx=None):
-        template_name = self.keyboard_template_file % template_code
-        super(KeyboardResponse, self).__init__(template_name, ctx)
+    def __init__(self, template_keyboard, ctx=None):
+        super(KeyboardResponse, self).__init__(template_keyboard, ctx)
         
     def render(self):
         keyboard = super(KeyboardResponse, self).render()
