@@ -1,5 +1,6 @@
 from telegrambot.generic.base import TemplateCommandView
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist,\
+    FieldError
 
 class DetailCommandView(TemplateCommandView):
     model = None
@@ -10,7 +11,7 @@ class DetailCommandView(TemplateCommandView):
     def __init__(self, slug=None):
         self.slug = slug
     
-    def get_slug_field(self):
+    def get_slug_field(self, **kwargs):
         """
         Get the name of a slug field to be used to look up by slug.
         """
@@ -35,18 +36,26 @@ class DetailCommandView(TemplateCommandView):
                 )
         return self.queryset.all()
     
-    def get_slug(self):
+    def get_slug(self, **kwargs):
         return self.slug
     
-    def get_context(self, update):
+    def get_context(self, update, **kwargs):
         queryset = self.get_queryset()
         if not self.slug_field: 
             raise AttributeError("Generic detail view %s must be called with "
                                  "a slug."
                                  % self.__class__.__name__)
-        slug_field = self.get_slug_field()
-        slug = self.get_slug()
-        object = queryset.get(**{slug_field: slug})
+        slug_field = self.get_slug_field(**kwargs)
+        slug = self.get_slug(**kwargs)
+        if slug:
+            try:
+                object = queryset.get(**{slug_field: slug})
+            except FieldError:
+                raise FieldError("Field %s not in valid. Review slug_field" % slug_field)
+            except ObjectDoesNotExist:
+                object = None
+        else: 
+            object = None
         context = {'context_object_name': object}
         if self.context_object_name:
             context[self.context_object_name] = object

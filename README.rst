@@ -56,15 +56,21 @@ Add webhook url to your urlpatterns::
 
 	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")	
 
-Define whe file where commands will be defined in ``commandspatterns`` variable, analogue to django ``urls``
+Define whe file where commands will be defined in ``bothandlers`` variable, analogue to django ``urls``
 and ``ROOT_URLCONF``::
 
-	TELEGRAM_BOT_COMMANDS_CONF = "app.commands"
+	TELEGRAM_BOT_HANDLERS_CONF = "app.handlers"
 	
-Set bot commands handlers is very easy just define a module with ``commandspatterns`` list of tuples
-('command', command_view)::
+Set bot commands handlers is very easy just as defining `urls` in django. Module with ``bothandlers`` that list 
+different handlers::
 
-	commandspatterns = [('start', StartView.as_command_view())	
+	bothandlers = [command('start', StartView.as_command_view()),
+               	   command('author', AuthorCommandView.as_command_view()),
+               	   command('author_inverse', AuthorInverseListView.as_command_view()),
+                   command('author_query', AuthorCommandQueryView.as_command_view()),
+                   unknown_command(UnknownView.as_command_view()),
+                   regex(r'author_(?P<name>\w+)', AuthorName.as_command_view()),
+                  ]
 	
 Use command  ``set_webhook`` to specify the url to receive the incoming updates via webhook::
 

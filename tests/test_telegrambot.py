@@ -10,6 +10,7 @@ from telegrambot import conf
 from django.core.management import call_command
 from django.utils.six import StringIO
 from django.core.management.base import CommandError
+from django.conf import settings
 try:
     from unittest import mock
 except ImportError:
@@ -21,6 +22,10 @@ class BaseTestBot(TestCase):
     def setUp(self):
         self.update = factories.UpdateFactory()
         self.kwargs = {'content_type': 'application/json', }
+        
+    def tearDown(self):
+        if not conf.TELEGRAM_BOT_TOKEN:
+            conf.TELEGRAM_BOT_TOKEN = getattr(settings, 'TELEGRAM_BOT_TOKEN', None)
         
     def assertUser(self, model_user, user):
         self.assertEqual(model_user.id, user.id)
@@ -80,7 +85,6 @@ class BaseTestBot(TestCase):
             self.assertBotResponse(mock_send, command)
             self.assertEqual(number, Update.objects.count())
             self.assertUpdate(Update.objects.get(update_id=update.update_id), update)
-        
 
 class TestBotCommands(BaseTestBot): 
     
@@ -181,3 +185,63 @@ class TestBotCommands(BaseTestBot):
         self._test_command_ok(self.unknown, update_2, 2)
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(Chat.objects.count(), 1)
+        
+class TestBotMessage(BaseTestBot): 
+    
+    def _test_message_ok(self, message, update=None, number=1):
+        if not update:
+            update = self.update
+        with mock.patch("telegram.bot.Bot.sendMessage", callable=mock.MagicMock()) as mock_send:
+            response = self.client.post(self.webhook_url, update.to_json(), **self.kwargs)
+            #  Check response 200 OK
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            #  Check  
+            self.assertBotResponse(mock_send, message)
+            self.assertEqual(number, Update.objects.count())
+            self.assertUpdate(Update.objects.get(update_id=update.update_id), update)
+    
+    any_message = {'values': {'parse_mode': 'Markdown',
+                              'reply_markup': '',
+                              'text': "Please"
+                              }   
+                   }
+    
+#     def test_message_handler(self):
+#         self._test_message_ok(self.any_message)
+        
+class TestBotRegex(BaseTestBot):
+    
+    def _test_regex_ok(self, regex, update=None, number=1):
+        if not update:
+            update = self.update
+        with mock.patch("telegram.bot.Bot.sendMessage", callable=mock.MagicMock()) as mock_send:
+            update.message.text = regex['regex']
+            response = self.client.post(self.webhook_url, update.to_json(), **self.kwargs)
+            #  Check response 200 OK
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            #  Check  
+            self.assertBotResponse(mock_send, regex)
+            self.assertEqual(number, Update.objects.count())
+            self.assertUpdate(Update.objects.get(update_id=update.update_id), update)
+            
+    author_name = {'regex': 'author_authorname',
+                   'values': {'parse_mode': 'Markdown',
+                              'reply_markup': '',
+                              'text': "Author name:authorname"
+                              } 
+                   }
+    
+    author_not_found = {'regex': 'author_notname',
+                        'values': {'parse_mode': 'Markdown',
+                                   'reply_markup': '',
+                                   'text': "Author not found"
+                                   } 
+                        }
+    
+    def test_regex_handler_match(self):
+        factories.AuthorFactory(name="authorname")
+        self._test_regex_ok(self.author_name)
+        
+    def test_regex_handler_not_match(self):
+        factories.AuthorFactory(name="authorname")
+        self._test_regex_ok(self.author_not_found)
