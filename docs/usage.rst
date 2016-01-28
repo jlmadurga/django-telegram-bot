@@ -37,34 +37,33 @@ Define  a command view is really easy using generic classed views, analogues to 
 
 Simple view just with a template, image /start command just to wellcome::
 
-
 	class StartView(TemplateCommandView):
-    	template_code = "start"
+   		template_text = "bot/messages/command_start_text.txt"
 
 List and detail views::
 
-
 	class AuthorListView(ListCommandView):
-    	template_code = "author_list"
+    	template_text = "bot/messages/command_author_list_text.txt"
+    	template_keyboard = "bot/messages/command_author_list_keyboard.txt"
     	model = Author
     	context_object_name = "authors"
     	ordering = "-name"
  
     class AuthorDetailView(DetailCommandView):
-    	template_code = "author_detail"
+    	template_text = "bot/messages/command_author_detail_text.txt"
+    	template_keyboard = "bot/messages/command_author_detail_keyboard.txt"
     	context_object_name = "author"
     	model = Author
     	slug_field = 'name'
-    	
+
 Most common use of commands is to have ``/command`` with no args for getting list and ``/command element`` for 
 getting detail of one concrete element. It is easy to define::
 
-    	
     class AuthorCommandView(ListDetailCommandView):
     	list_view_class = AuthorListView
     	detail_view_class = AuthorDetailView
     	
 Templates works just as normal django app. In /start command example it will search in templates dirs 
-for ``telegrambot/messages/command_start_text.txt`` to compound response message and 
-``telegrambot/messages/command_start_keyboard.txt``.
+for ``bot/messages/command_start_text.txt`` to compound response message and 
+``bot/messages/command_start_keyboard.txt``.
 

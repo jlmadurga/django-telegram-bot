@@ -5,13 +5,14 @@ from telegrambot.generic.compound import ListDetailCommandView
 from tests.models import Author
 
 class StartView(TemplateCommandView):
-    template_code = "start"
+    template_text = "bot/messages/command_start_text.txt"
     
 class UnknownView(TemplateCommandView):
-    template_code = "unknown"
+    template_text = "bot/messages/command_unknown_text.txt"
     
 class AuthorListView(ListCommandView):
-    template_code = "author_list"
+    template_text = "bot/messages/command_author_list_text.txt"
+    template_keyboard = "bot/messages/command_author_list_keyboard.txt"
     model = Author
     context_object_name = "authors"
     
@@ -19,7 +20,7 @@ class AuthorInverseListView(AuthorListView):
     ordering = "-name"
 
 class AuthorDetailView(DetailCommandView):
-    template_code = "author_detail"
+    template_text = "bot/messages/command_author_detail_text.txt"
     context_object_name = "author"
     model = Author
     slug_field = 'name'
@@ -39,10 +40,10 @@ class AuthorCommandQueryView(ListDetailCommandView):
     detail_view_class = AuthorDetailQueryView
     
 class MessageView(TemplateCommandView):
-    template_code = "message"
+    template_text = "bot/messages/unknown_message_text.txt"
     
 class AuthorName(DetailCommandView):
-    template_code = "author_name"
+    template_text = "bot/messages/regex_author_name_text.txt"
     context_object_name = "author"
     model = Author
     slug_field = 'name'
