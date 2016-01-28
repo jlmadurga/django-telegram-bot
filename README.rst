@@ -3,12 +3,11 @@ django-telegram-bot
 =============================
 CI:
 
-.. image:: https://img.shields.io/travis/jlmadurga/django-telegram-bot.svg
-        :target: https://travis-ci.org/jlmadurga/django-telegram-bot
+.. image:: https://travis-ci.org/jlmadurga/django-telegram-bot.svg?branch=master
+    :target: https://travis-ci.org/jlmadurga/django-telegram-bot
 
-.. image:: https://coveralls.io/repos/jlmadurga/django-telegram-bot/badge.svg?branch=master&service=github
-   :target: https://coveralls.io/github/jlmadurga/django-telegram-bot?branch=master
-   :alt: Coveralls
+.. image:: https://coveralls.io/repos/github/jlmadurga/django-telegram-bot/badge.svg?branch=master 
+	:target: https://coveralls.io/github/jlmadurga/django-telegram-bot?branch=master
   
 .. image:: https://requires.io/github/jlmadurga/django-telegram-bot/requirements.svg?branch=master
      :target: https://requires.io/github/jlmadurga/django-telegram-bot/requirements/?branch=master
