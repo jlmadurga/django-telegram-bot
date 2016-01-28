@@ -10,17 +10,13 @@ class Bot(object):
         if not conf.TELEGRAM_BOT_TOKEN:
             raise ImproperlyConfigured("Telegram bot requires Telegram token.")
         if not conf.TELEGRAM_BOT_COMMANDS_CONF:
-            commandspatterns = []
+            bothandlers = []
         else:
-            commandspatterns = importlib.import_module(conf.TELEGRAM_BOT_COMMANDS_CONF).commandspatterns
+            bothandlers = importlib.import_module(conf.TELEGRAM_BOT_COMMANDS_CONF).bothandlers
         self.updater = Updater(conf.TELEGRAM_BOT_TOKEN)
-        dp = self.updater.dispatcher
         #  on different commands - answer in Telegram
-        for command in commandspatterns:
-            if command[0]:
-                dp.addTelegramCommandHandler(command[0], command[1])
-            else:
-                dp.addUnknownTelegramCommandHandler(command[1])
+        for handler in bothandlers:
+            handler.add_to_dispatcher(self.updater.dispatcher)
    
     def process_update(self, update):
         self.updater.dispatcher.processUpdate(update)

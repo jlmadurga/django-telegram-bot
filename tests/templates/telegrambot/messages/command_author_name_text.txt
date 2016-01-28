@@ -1,0 +1,1 @@
+{% if author %}Author name:{{ author.name }}{% else %}Author not found{% endif %}

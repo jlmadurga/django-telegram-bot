@@ -37,3 +37,17 @@ class AuthorCommandView(ListDetailCommandView):
 class AuthorCommandQueryView(ListDetailCommandView):
     list_view_class = AuthorListQueryView
     detail_view_class = AuthorDetailQueryView
+    
+class MessageView(TemplateCommandView):
+    template_code = "message"
+    
+class AuthorName(DetailCommandView):
+    template_code = "author_name"
+    context_object_name = "author"
+    model = Author
+    slug_field = 'name'
+    
+    def get_slug(self, **kwargs):
+        patterns = kwargs.get('pattern', None)
+        if patterns:
+            return patterns.get('name', None)

@@ -3,15 +3,16 @@ from telegram import ParseMode
 import sys
 import traceback
 
+
 class TemplateCommandView(object):
     template_code = None    
     
-    def get_context(self, update):
+    def get_context(self, update, **kwargs):
         return None    
 
-    def handle(self, bot, update):
+    def handle(self, bot, update, **kwargs):
         try:
-            ctx = self.get_context(update)
+            ctx = self.get_context(update, **kwargs)
             text = TextResponse(self.template_code, ctx).render()
             keyboard = KeyboardResponse(self.template_code, ctx).render()        
 #             logger.debug("Text:" + str(text.encode('utf-8')))
@@ -25,7 +26,7 @@ class TemplateCommandView(object):
 
     @classmethod
     def as_command_view(cls, **initkwargs):
-        def view(bot, update):
+        def view(bot, update, groupdict=None):
             self = cls(**initkwargs)
-            return self.handle(bot, update)
+            return self.handle(bot, update, pattern=groupdict)
         return view

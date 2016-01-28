@@ -1,8 +1,14 @@
 from tests.commands_views import StartView, AuthorCommandView, AuthorInverseListView, AuthorCommandQueryView, \
-    UnknownView
+    UnknownView, AuthorName  # , MessageView
+from telegrambot.handlers import command, unknown_command, regex  # , message 
 
-commandspatterns = [('start', StartView.as_command_view()),
-                    ('author', AuthorCommandView.as_command_view()),
-                    ('author_inverse', AuthorInverseListView.as_command_view()),
-                    ('author_query', AuthorCommandQueryView.as_command_view()),
-                    (None, UnknownView.as_command_view())]
+
+bothandlers = [command('start', StartView.as_command_view()),
+               command('author', AuthorCommandView.as_command_view()),
+               command('author_inverse', AuthorInverseListView.as_command_view()),
+               command('author_query', AuthorCommandQueryView.as_command_view()),
+               unknown_command(UnknownView.as_command_view()),
+               regex(r'author_(?P<name>\w+)', AuthorName.as_command_view()),
+               # TODO: python-telegram-bot #166: cant combine regex and message 
+               # message(MessageView.as_command_view())
+               ]

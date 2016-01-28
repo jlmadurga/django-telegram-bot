@@ -1,0 +1,1 @@
+Please, use _/help_ command to list commands
