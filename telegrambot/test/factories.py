@@ -1,9 +1,8 @@
 # coding=utf-8
-from factory import Sequence, SubFactory, Factory, DjangoModelFactory
+from factory import Sequence, SubFactory, Factory
 from telegram import Update, Message, User, Chat
 from django.utils import timezone
 from factory.fuzzy import FuzzyText
-from tests.models import Author
 
 
 class UserFactory(Factory):
@@ -38,9 +37,3 @@ class UpdateFactory(Factory):
         model = Update
     update_id = Sequence(lambda n: n+1)
     message = SubFactory(MessageFactory)
-    
-    
-class AuthorFactory(DjangoModelFactory):
-    class Meta:
-        model = Author
-    name = Sequence(lambda n: 'author_%d' % n)
