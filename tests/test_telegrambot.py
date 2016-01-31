@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from telegrambot.models import User, Chat
+from telegrambot.models import User, Chat, Bot
 from telegrambot.test import factories, testcases
-from telegrambot import conf
-from django.core.management import call_command
-from django.utils.six import StringIO
-from django.core.management.base import CommandError
 from factory import DjangoModelFactory, Sequence
 from tests.models import Author
+from django.core.urlresolvers import reverse
+from rest_framework import status
 try:
     from unittest import mock
 except ImportError:
@@ -70,16 +68,31 @@ class TestBotCommands(testcases.BaseTestBot):
                                    }   
                            }
     
-    def test_webhook(self):
-        out = StringIO()
-        call_command('set_webhook', stdout=out)
-        self.assertIn('Success:', out.getvalue())
+    def test_enable_webhook(self):
+        self.assertTrue(self.bot.enabled)
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()) as mock_setwebhook:
+            self.bot.save()
+            args, kwargs = mock_setwebhook.call_args
+            self.assertEqual(1, mock_setwebhook.call_count)
+            self.assertIn(reverse('telegrambot:webhook', kwargs={'token': self.bot.token}), 
+                          kwargs['webhook_url'])
+            self.assertEqual(None, kwargs['certificate'])
+            
+    def test_disable_webhook(self):
+        self.bot.enabled = False
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()) as mock_setwebhook:
+            self.bot.save()
+            args, kwargs = mock_setwebhook.call_args
+            self.assertEqual(1, mock_setwebhook.call_count)
+            self.assertEqual(None, kwargs['webhook_url'])
+            self.assertEqual(None, kwargs['certificate'])
+            
+    def test_no_bot_associated(self):
+        Bot.objects.all().delete()
+        self.assertEqual(0, Bot.objects.count())
+        response = self.client.post(self.webhook_url, self.update.to_json(), **self.kwargs)
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         
-    def test_webhook_no_token(self):
-        conf.TELEGRAM_BOT_TOKEN = None
-        out = StringIO()
-        self.assertRaises(CommandError, call_command, 'set_webhook', stdout=out)
-
     def test_start(self):
         self._test_message_ok(self.start)
         

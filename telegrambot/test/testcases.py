@@ -6,8 +6,6 @@ from telegrambot.test import factories
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from telegram.replykeyboardhide import ReplyKeyboardHide
-from telegrambot import conf
-from django.conf import settings
 try:
     from unittest import mock
 except ImportError:
@@ -17,14 +15,11 @@ except ImportError:
 class BaseTestBot(TestCase):    
 
     def setUp(self):
-        self.webhook_url = reverse('telegrambot:webhook', kwargs={'token': conf.TELEGRAM_BOT_TOKEN})
+        self.bot = factories.BotFactory()
+        self.webhook_url = reverse('telegrambot:webhook', kwargs={'token': self.bot.token})
         self.update = factories.UpdateFactory()
         self.kwargs = {'content_type': 'application/json', }
-        
-    def tearDown(self):
-        if not conf.TELEGRAM_BOT_TOKEN:
-            conf.TELEGRAM_BOT_TOKEN = getattr(settings, 'TELEGRAM_BOT_TOKEN', None)
-        
+
     def assertUser(self, model_user, user):
         self.assertEqual(model_user.id, user.id)
         self.assertEqual(model_user.first_name, user.first_name)
