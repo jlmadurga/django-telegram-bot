@@ -5,10 +5,9 @@ Usage
 First you need a telegram bot and its token, visit https://core.telegram.org/bots.
 
 
-After creating a bot in Telegram Platform set token received in settings::
-
-	TELEGRAM_BOT_TOKEN = "token from your telegram bot"
-
+After creating a bot in Telegram Platform, create at least one bot with django admin. Token is the only
+required field. You may need to provided public key certificate for your server. https://core.telegram.org/bots/self-signed
+Heroku has https and ssl by default so it is a good option if you dont want to deal with that.
 Add webhook url to your urlpatterns::
 
 	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")	
@@ -34,12 +33,10 @@ of different handlers `command('command', command_view)`, `regex('re_expresion',
 
 	bothandlers = [command('start', StartView.as_command_view())]	
 	
-Use command  ``set_webhook`` to specify the url to receive the incoming updates via webhook::
+To set the webhook for telegram you need ``django.contrib.sites`` installed, ``SITE_ID`` configured 
+in settings and with it correct value in the DB. The webhook for each bot is set when a Bot is saved and 
+``enabled`` field is set to true.
 
-	$ python manage.py set_webhook
-	
-To set the webhook for telegram you need ``django.contrib.sites`` installed, ``SITE_ID`` configured in settings and
-with it correct value in the DB.
 	
 Command views responses with Telegram messages to the user who send the command with a text message and keyboard.
 Compound with a context and a template. The way it is handled is analogue to Django views. 
