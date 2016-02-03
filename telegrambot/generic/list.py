@@ -37,7 +37,7 @@ class ListCommandView(TemplateCommandView):
         """
         return self.ordering
     
-    def get_context(self, update, **kwargs):
+    def get_context(self, bot, update, **kwargs):
         object_list = self.get_queryset()
         context = {'object_list': object_list}
         if self.context_object_name:

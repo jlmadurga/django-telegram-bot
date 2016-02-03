@@ -39,7 +39,7 @@ class DetailCommandView(TemplateCommandView):
     def get_slug(self, **kwargs):
         return self.slug
     
-    def get_context(self, update, **kwargs):
+    def get_context(self, bot, update, **kwargs):
         queryset = self.get_queryset()
         if not self.slug_field: 
             raise AttributeError("Generic detail view %s must be called with "

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from telegrambot.models import User, Chat, Message, Update
+from telegrambot.models import User, Chat, Message, Update, AuthToken
 from datetime import datetime
 import time
 
@@ -53,7 +53,14 @@ class UpdateSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         user, _ = User.objects.get_or_create(**validated_data['message']['from_user'])
         
-        chat, _ = Chat.objects.get_or_create(**validated_data['message']['chat'])
+        chat, created = Chat.objects.get_or_create(**validated_data['message']['chat'])        
+        if created:
+            # if chat is created with auth token then associate to AuthToken
+            splitted_message = validated_data['message']['text'].split(' ')
+            if len(splitted_message) > 1 and splitted_message[0] == '/start':
+                token = AuthToken.objects.get(key=splitted_message[1])
+                token.chat_api = chat
+                token.save()                
         
         message, _ = Message.objects.get_or_create(message_id=validated_data['message']['message_id'],
                                                    from_user=user,

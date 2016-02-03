@@ -11,14 +11,14 @@ class TemplateCommandView(object):
     template_text = None
     template_keyboard = None    
     
-    def get_context(self, update, **kwargs):
+    def get_context(self, bot, update, **kwargs):
         return None    
 
     def handle(self, bot, update, **kwargs):
         try:
-            ctx = self.get_context(update, **kwargs)
+            ctx = self.get_context(bot, update, **kwargs)
             text = TextResponse(self.template_text, ctx).render()
-            keyboard = KeyboardResponse(self.template_keyboard, ctx).render()        
+            keyboard = KeyboardResponse(self.template_keyboard, ctx).render()       
 #             logger.debug("Text:" + str(text.encode('utf-8')))
 #             logger.debug("Keyboard:" + str(keyboard))
             if text:
@@ -32,7 +32,7 @@ class TemplateCommandView(object):
 
     @classmethod
     def as_command_view(cls, **initkwargs):
-        def view(bot, update, groupdict=None):
+        def view(bot, update, groupdict=None, **kwargs):
             self = cls(**initkwargs)
-            return self.handle(bot, update, pattern=groupdict)
+            return self.handle(bot, update, pattern=groupdict, **kwargs)
         return view

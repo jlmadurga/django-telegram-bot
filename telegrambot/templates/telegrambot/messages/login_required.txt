@@ -1,0 +1,2 @@
+{% load i18n %} 
+{% blocktrans with link=link %}You need an *authenticated chat* to perform this action please login [here]({{link}}){% endblocktrans %}

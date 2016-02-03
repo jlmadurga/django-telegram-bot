@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 import logging
+from telegrambot.models import User
 
 
 logger = logging.getLogger(__file__)
@@ -16,9 +17,11 @@ logger = logging.getLogger(__file__)
 
 @python_2_unicode_compatible
 class Bot(models.Model):
-    name = models.CharField(_("Name"), max_length=200, blank=True, null=True)
     token = models.CharField(_('Token'), max_length=100, db_index=True)
-    ssl_certificate = models.FileField(_("SSL certificate"), upload_to='telegrambot/ssl/', blank=True, null=True)
+    user_api = models.OneToOneField(User, verbose_name=_("Bot User"), related_name='bot', 
+                                    on_delete=models.CASCADE, blank=True, null=True)
+    ssl_certificate = models.FileField(_("SSL certificate"), upload_to='telegrambot/ssl/', 
+                                       blank=True, null=True)
     enabled = models.BooleanField(_('Enable'), default=True)
     created = models.DateTimeField(('Date Created'), auto_now_add=True)
     modified = models.DateTimeField(_('Date Modified'), auto_now=True)    
@@ -47,18 +50,23 @@ class Bot(models.Model):
             logger.debug("Handler %s added to bot %s" % (handler, str(self)))
             
     def __str__(self):
-        return "%s" % (self.name or self.token)
+        return "%s" % (self.user_api.first_name or self.token if self.user_api else self.token)
             
     def process_update(self, update):
         """
         update: from python-telegram-bot
         """
         self.updater.dispatcher.processUpdate(update)
+        
 
 @receiver(post_save, sender=Bot)
-def set_webhook(sender, instance, **kwargs):
+def set_api(sender, instance, **kwargs):
+    #  configure handlers if not yet
     if not instance.updater:
         instance._configure_handlers()
+        logger.info("Success: Handlers for bot %s set" % str(instance))
+
+    # set webhook
     url = None
     cert = None
     if instance.enabled:
@@ -67,7 +75,15 @@ def set_webhook(sender, instance, **kwargs):
         current_site = Site.objects.get_current()
         url = 'https://' + current_site.domain + webhook   
     if instance.ssl_certificate:
-        cert = instance.ssl_certificate.open
+        cert = instance.ssl_certificate.open()
     instance.updater.bot.setWebhook(webhook_url=url, 
                                     certificate=cert)
-    logger.info("Success: Webhook url %s for bot %s set" % (url, str(instance)))    
+    logger.info("Success: Webhook url %s for bot %s set" % (url, str(instance)))
+    
+    #  complete  Bot instance with api data
+    if not instance.user_api:
+        bot_api = instance.updater.bot.getMe()
+        user_api, _ = User.objects.get_or_create(**bot_api.to_dict())
+        instance.user_api = user_api
+        instance.save()
+        logger.info("Success: Bot api info for bot %s set" % str(instance))
