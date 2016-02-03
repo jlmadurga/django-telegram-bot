@@ -237,7 +237,7 @@ class TestAuthView(testcases.BaseTestBot):
     def test_token_creation(self):
         self.bot.save()
         user = ModelUser.objects.create_user(**self.user_args)
-        self.client.force_login(user)
+        self.client.login(username=self.user_args['username'], password=self.user_args['password'])
         response = self.client.get(self.auth_url)  
         self.assertEqual(1, AuthToken.objects.count())
         token = AuthToken.objects.all()[0]
@@ -251,7 +251,7 @@ class TestAuthView(testcases.BaseTestBot):
         user = ModelUser.objects.create_user(**self.user_args)
         token = AuthToken.objects.create(user=user)
         self.assertTrue(token.expired())
-        self.client.force_login(user)
+        self.client.login(username=self.user_args['username'], password=self.user_args['password'])
         self.client.get(self.auth_url)
         self.assertEqual(AuthToken.objects.count(), 1)
         new_token = AuthToken.objects.all()[0]
