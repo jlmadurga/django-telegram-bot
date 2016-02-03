@@ -54,13 +54,17 @@ class UpdateSerializer(serializers.HyperlinkedModelSerializer):
         user, _ = User.objects.get_or_create(**validated_data['message']['from_user'])
         
         chat, created = Chat.objects.get_or_create(**validated_data['message']['chat'])        
-        if created:
-            # if chat is created with auth token then associate to AuthToken
-            splitted_message = validated_data['message']['text'].split(' ')
-            if len(splitted_message) > 1 and splitted_message[0] == '/start':
+
+        # Associate chat to token if comes /start with token
+        splitted_message = validated_data['message']['text'].split(' ')
+        if len(splitted_message) > 1 and splitted_message[0] == '/start':
+            try:
                 token = AuthToken.objects.get(key=splitted_message[1])
                 token.chat_api = chat
-                token.save()                
+                token.save()
+            except AuthToken.DoesNotExist:
+                #  Do not associate with any token
+                pass                
         
         message, _ = Message.objects.get_or_create(message_id=validated_data['message']['message_id'],
                                                    from_user=user,
