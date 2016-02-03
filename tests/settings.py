@@ -57,3 +57,4 @@ LOGGING = {
 }
 
 TELEGRAM_BOT_HANDLERS_CONF = "tests.bot_handlers"
+TELEGRAM_BOT_TOKEN_EXPIRATION = "2" # tow hours before a token expires
