@@ -1,7 +1,7 @@
 from tests.commands_views import StartView, AuthorCommandView, AuthorInverseListView, AuthorCommandQueryView, \
     UnknownView, AuthorName  # , MessageView
 from telegrambot.handlers import command, unknown_command, regex  # , message 
-from telegrambot.decorators import login_required
+from telegrambot.bot_views.decorators import login_required
 
 
 bothandlers = [command('start', StartView.as_command_view()),

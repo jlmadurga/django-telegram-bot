@@ -1,4 +1,4 @@
-from telegrambot.generic import TemplateCommandView
+from telegrambot.bot_views.generic import TemplateCommandView
 from telegrambot.models import Bot
 
 class LoginBotView(TemplateCommandView):

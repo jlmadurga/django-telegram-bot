@@ -1,7 +1,5 @@
-from telegrambot.generic.base import TemplateCommandView
-from telegrambot.generic.list import ListCommandView
-from telegrambot.generic.detail import DetailCommandView
-from telegrambot.generic.compound import ListDetailCommandView
+from telegrambot.bot_views.generic import TemplateCommandView, ListCommandView, DetailCommandView, \
+    ListDetailCommandView
 from tests.models import Author
 
 class StartView(TemplateCommandView):

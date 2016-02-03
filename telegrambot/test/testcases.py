@@ -18,7 +18,7 @@ class BaseTestBot(TestCase):
         self.bot = factories.BotFactory()
         self.webhook_url = reverse('telegrambot:webhook', kwargs={'token': self.bot.token})
         self.auth_url = reverse('telegrambot:auth', kwargs={'bot': self.bot.user_api.username})
-        self.update = factories.UpdateAPIFactory()
+        self.update = factories.UpdateLibFactory()
         self.kwargs = {'content_type': 'application/json', }
 
     def assertUser(self, model_user, user):

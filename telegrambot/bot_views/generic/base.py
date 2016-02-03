@@ -1,4 +1,4 @@
-from telegrambot.generic.responses import TextResponse, KeyboardResponse
+from telegrambot.bot_views.generic.responses import TextResponse, KeyboardResponse
 from telegram import ParseMode
 import sys
 import traceback

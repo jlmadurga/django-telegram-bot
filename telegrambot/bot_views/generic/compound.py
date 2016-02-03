@@ -1,4 +1,4 @@
-from telegrambot.generic.base import TemplateCommandView
+from telegrambot.bot_views.generic.base import TemplateCommandView
 
 class ListDetailCommandView(TemplateCommandView):
     list_view_class = None

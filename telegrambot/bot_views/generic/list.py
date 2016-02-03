@@ -1,4 +1,4 @@
-from telegrambot.generic.base import TemplateCommandView
+from telegrambot.bot_views.generic.base import TemplateCommandView
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.query import QuerySet
 from django.utils import six

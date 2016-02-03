@@ -13,7 +13,7 @@ def login_required(view_func):
         chat = Chat.objects.get(id=update.message.chat.id)
         if chat.is_authenticated():
             return view_func(bot, update, **kwargs)
-        from telegrambot.command_views import LoginBotView
+        from telegrambot.bot_views.login import LoginBotView
         login_command_view = LoginBotView.as_command_view()
         bot_model = Bot.objects.get(token=bot.token)
         kwargs['link'] = reverse('telegrambot:auth', kwargs={'bot': bot_model.user_api.first_name}) 

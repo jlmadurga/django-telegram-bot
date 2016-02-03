@@ -145,7 +145,7 @@ class TestBotCommands(testcases.BaseTestBot):
         self._test_message_ok(self.start)
         user = self.update.message.from_user
         chat = self.update.message.chat
-        update_2 = factories.UpdateAPIFactory()
+        update_2 = factories.UpdateLibFactory()
         update_2.message.from_user = user
         update_2.message.chat = chat
         self._test_message_ok(self.unknown, update_2, 2)
