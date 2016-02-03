@@ -11,12 +11,17 @@ INSTALLED_APPS=[
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sites",
+    'django.contrib.sessions',
     "rest_framework",
     "telegrambot",
     "tests"
 ]
 SITE_ID=1
-MIDDLEWARE_CLASSES=()
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+
+)
 SECRET_KEY = "shds8dfyhskdfhskdfhskdf"
 
 LOGGING = {
@@ -52,3 +57,4 @@ LOGGING = {
 }
 
 TELEGRAM_BOT_HANDLERS_CONF = "tests.bot_handlers"
+TELEGRAM_BOT_TOKEN_EXPIRATION = "2" # tow hours before a token expires

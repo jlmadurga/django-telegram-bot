@@ -12,23 +12,23 @@ Add webhook url to your urlpatterns::
 
 	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")	
 
-Define whe file where commands will be defined in ``bothandlers`` variable, analogue to django ``urls``
+Define whe file where bot views will be defined in ``bothandlers`` variable, analogue to django ``urls``
 and ``ROOT_URLCONF``::
 
 	TELEGRAM_BOT_HANDLERS_CONF = "app.handlers"
 
-Set bot commands handlers is very easy just as defining `urls` in django. Module with ``bothandlers`` that list 
+Set bot views handlers is very easy just as defining `urls` in django. Module with ``bothandlers`` that list 
 different handlers::
 
 	bothandlers = [command('start', StartView.as_command_view()),
                	   command('author', AuthorCommandView.as_command_view()),
                	   command('author_inverse', AuthorInverseListView.as_command_view()),
-                   command('author_query', AuthorCommandQueryView.as_command_view()),
+                   command('author_query', login_required(AuthorCommandQueryView.as_command_view())),
                    unknown_command(UnknownView.as_command_view()),
                    regex(r'author_(?P<name>\w+)', AuthorName.as_command_view()),
                   ]
 
-Set bot commands handlers is very easy just as defining `urls`in django. Module with ``bothandlers`` list 
+Set bot views handlers is very easy just as defining `urls`in django. Module with ``bothandlers`` list 
 of different handlers `command('command', command_view)`, `regex('re_expresion', command_view)`,...::
 
 	bothandlers = [command('start', StartView.as_command_view())]	
@@ -38,10 +38,10 @@ in settings and with it correct value in the DB. The webhook for each bot is set
 ``enabled`` field is set to true.
 
 	
-Command views responses with Telegram messages to the user who send the command with a text message and keyboard.
+Bot views responses with Telegram messages to the user with a text message and keyboard.
 Compound with a context and a template. The way it is handled is analogue to Django views. 
 
-Define  a command view is really easy using generic classed views, analogues to django generic views.
+Define  a bot view is really easy using generic classed views, analogues to django generic views.
 
 Simple view just with a template, image /start command just to wellcome::
 
@@ -75,3 +75,19 @@ Templates works just as normal django app. In /start command example it will sea
 for ``bot/messages/command_start_text.txt`` to compound response message and 
 ``bot/messages/command_start_keyboard.txt``.
 
+Authentication
+-------------------------
+
+
+If you require to be authenticated to perform some commands you can decorate ``bot_views`` with ``login_required``. This
+is the flow the user will experience until being able to execute protected command:
+
+* If chat is not already authenticated a message with a web link will be returned to login through the web site.
+
+* Once logged, a link to open new authenticated chat will be returned to the user with `deep linking`_ mechanism. 
+.. _deep linking: https://core.telegram.org/bots#deep-linking
+* The user starts this new chat and now the bot will identify this chat as authenticated until token expires.
+
+Define in ``settings`` the time life of a token:: 
+
+	TELEGRAM_BOT_TOKEN_EXPIRATION = 2 # two hours for a token to expire

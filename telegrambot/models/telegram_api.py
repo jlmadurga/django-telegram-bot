@@ -42,6 +42,9 @@ class Chat(models.Model):
 
     def __str__(self):
         return "%s" % (self.title or self.username)
+    
+    def is_authenticated(self):
+        return hasattr(self, 'auth_token') and not self.auth_token.expired()
 
 @python_2_unicode_compatible
 class Message(models.Model):

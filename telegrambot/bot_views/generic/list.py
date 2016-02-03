@@ -1,4 +1,4 @@
-from telegrambot.generic.base import TemplateCommandView
+from telegrambot.bot_views.generic.base import TemplateCommandView
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.query import QuerySet
 from django.utils import six
@@ -37,7 +37,7 @@ class ListCommandView(TemplateCommandView):
         """
         return self.ordering
     
-    def get_context(self, update, **kwargs):
+    def get_context(self, bot, update, **kwargs):
         object_list = self.get_queryset()
         context = {'object_list': object_list}
         if self.context_object_name:
