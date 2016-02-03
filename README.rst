@@ -67,7 +67,7 @@ different handlers::
 	bothandlers = [command('start', StartView.as_command_view()),
                	   command('author', AuthorCommandView.as_command_view()),
                	   command('author_inverse', AuthorInverseListView.as_command_view()),
-                   command('author_query', AuthorCommandQueryView.as_command_view()),
+                   command('author_query', login_required(AuthorCommandQueryView.as_command_view())),
                    unknown_command(UnknownView.as_command_view()),
                    regex(r'author_(?P<name>\w+)', AuthorName.as_command_view()),
                   ]
@@ -76,7 +76,7 @@ To set the webhook for telegram you need ``django.contrib.sites`` installed, ``S
 in settings and with it correct value in the DB. The webhook for each bot is set when a Bot is saved and 
 ``enabled`` field is set to true.
 	
-Command views responses with Telegram messages to the user who send the command with a text message and keyboard.
+Bot views responses with Telegram messages to the user who send the command with a text message and keyboard.
 Compound with a context and a template. The way it is handled is analogue to Django views.  Visits docs for more 
 details https://django-telegram-bot.readthedocs.org/usage.html
 
@@ -85,7 +85,8 @@ Features
 --------
 
 * Multiple bots
-* Commands handling definition.
+* Message handling definition.
+* Authentication
 * Text responses and keyboards. 
 * Media messages not supported.
 * Only Markup parse mode.
