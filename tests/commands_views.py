@@ -47,6 +47,4 @@ class AuthorName(DetailCommandView):
     slug_field = 'name'
     
     def get_slug(self, **kwargs):
-        patterns = kwargs.get('pattern', None)
-        if patterns:
-            return patterns.get('name', None)
+        return kwargs.get('name', None)

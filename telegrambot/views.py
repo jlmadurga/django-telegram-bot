@@ -19,7 +19,7 @@ class WebhookView(APIView):
             serializer.save()
             try:
                 bot = Bot.objects.get(token=token)
-                bot.process_update(Update.de_json(request.data))
+                bot.handle(Update.de_json(request.data))
             except Bot.DoesNotExist:
                 logger.warning("Token %s not associated to a bot" % token)
                 return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)

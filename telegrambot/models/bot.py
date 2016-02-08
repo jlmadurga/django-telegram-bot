@@ -3,14 +3,14 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-import importlib
-from telegram import Updater
+from telegram import Bot as BotAPI
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 import logging
 from telegrambot.models import User
-
+from telegrambot.handlers import HandlerResolver
+from telegrambot.handlers import HandlerNotFound
 
 logger = logging.getLogger(__file__)
 
@@ -32,39 +32,33 @@ class Bot(models.Model):
     
     def __init__(self, *args, **kwargs):
         super(Bot, self).__init__(*args, **kwargs)
-        self.updater = None
+        self._bot = None
         if self.token:
-            self._configure_handlers()
-
-    def _configure_handlers(self):
-        # create handlers
-        handlers_conf = getattr(settings, 'TELEGRAM_BOT_HANDLERS_CONF', None)
-        if not handlers_conf:
-            bothandlers = []
-        else:
-            bothandlers = importlib.import_module(handlers_conf).bothandlers
-        self.updater = Updater(self.token)
-        #  on different bot_handlers - answer in Telegram
-        for handler in bothandlers:
-            handler.add_to_dispatcher(self.updater.dispatcher)
-            logger.debug("Handler %s added to bot %s" % (handler, str(self)))
+            self._bot = BotAPI(self.token)
             
     def __str__(self):
         return "%s" % (self.user_api.first_name or self.token if self.user_api else self.token)
             
-    def process_update(self, update):
-        """
-        update: from python-telegram-bot
-        """
-        self.updater.dispatcher.processUpdate(update)
+    def handle(self, update):
+        handlerconf = settings.TELEGRAM_BOT_HANDLERS_CONF
+        resolver = HandlerResolver(handlerconf)
+        try:
+            resolver_match = resolver.resolve(update)
+        except HandlerNotFound:
+            logger.warning("Handler not found for %s" % update)
+        else:
+            callback, callback_args, callback_kwargs = resolver_match
+            callback(self, update, **callback_kwargs)
         
+    def send_message(self, chat_id, text, parse_mode=None, disable_web_page_preview=None, **kwargs):
+        self._bot.sendMessage(chat_id=chat_id, text=text, parse_mode=parse_mode, 
+                              disable_web_page_preview=disable_web_page_preview, **kwargs)        
 
 @receiver(post_save, sender=Bot)
 def set_api(sender, instance, **kwargs):
-    #  configure handlers if not yet
-    if not instance.updater:
-        instance._configure_handlers()
-        logger.info("Success: Handlers for bot %s set" % str(instance))
+    #  set bot api if not yet
+    if not instance._bot:
+        instance._bot = BotAPI(instance.token)
 
     # set webhook
     url = None
@@ -76,13 +70,13 @@ def set_api(sender, instance, **kwargs):
         url = 'https://' + current_site.domain + webhook   
     if instance.ssl_certificate:
         cert = instance.ssl_certificate.open()
-    instance.updater.bot.setWebhook(webhook_url=url, 
-                                    certificate=cert)
+    instance._bot.setWebhook(webhook_url=url, 
+                             certificate=cert)
     logger.info("Success: Webhook url %s for bot %s set" % (url, str(instance)))
     
     #  complete  Bot instance with api data
     if not instance.user_api:
-        bot_api = instance.updater.bot.getMe()
+        bot_api = instance._bot.getMe()
         user_api, _ = User.objects.get_or_create(**bot_api.to_dict())
         instance.user_api = user_api
         instance.save()

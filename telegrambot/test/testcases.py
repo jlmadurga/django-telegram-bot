@@ -80,3 +80,16 @@ class BaseTestBot(TestCase):
             self.assertBotResponse(mock_send, action)
             self.assertEqual(number, Update.objects.count())
             self.assertUpdate(Update.objects.get(update_id=update.update_id), update)
+            
+    def _test_message_no_handler(self, action, update=None, number=1):
+        if not update:
+            update = self.update
+        with mock.patch("telegram.bot.Bot.sendMessage", callable=mock.MagicMock()) as mock_send:
+            if 'in' in action:
+                update.message.text = action['in']            
+            response = self.client.post(self.webhook_url, update.to_json(), **self.kwargs)
+            #  Check response 200 OK
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(0, mock_send.call_count)
+            self.assertEqual(number, Update.objects.count())
+            self.assertUpdate(Update.objects.get(update_id=update.update_id), update)            
