@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from telegrambot.models import User, Chat, Bot, AuthToken
-from telegrambot.test import factories, testcases
+from telegrambot.test import factories, testcases   
 from factory import DjangoModelFactory, Sequence
 from tests.models import Author
 from django.core.urlresolvers import reverse
@@ -91,10 +91,10 @@ class TestBotCommands(testcases.BaseTestBot):
                                    }   
                            }
     
-    author_detail = {'in': '/author author_1',
+    author_detail = {'in': '/author author1',
                      'out': {'parse_mode': 'Markdown',
                              'reply_markup': '',
-                             'text': "Author name:author_1"
+                             'text': "Author name:author1"
                              }   
                      }
     
@@ -129,7 +129,7 @@ class TestBotCommands(testcases.BaseTestBot):
         self._test_message_ok(self.author_inverse_list)    
     
     def test_author_detail(self):
-        AuthorFactory(name="author_1")
+        AuthorFactory(name="author1")
         self._test_message_ok(self.author_detail)
         
     def test_author_list_queryset(self):
@@ -159,9 +159,22 @@ class TestBotMessage(testcases.BaseTestBot):
                            'text': "Please"
                            }   
                    }
-#      TODO: wait for python-telegram-bot fix
-#     def test_message_handler(self):
-#         self._test_message_ok(self.any_message)
+    
+    def test_message_handler(self):
+        self._test_message_ok(self.any_message)        
+    
+@override_settings(TELEGRAM_BOT_HANDLERS_CONF='tests.bot_handlers_empty')
+class TestBotNoHandlers(testcases.BaseTestBot):
+        
+    any_message = {'out': {'parse_mode': 'Markdown',
+                           'reply_markup': '',
+                           'text': "Please"
+                           }   
+                   }
+        
+    def test_no_handler(self):
+        self._test_message_no_handler(self.any_message)
+
         
 class TestBotRegex(testcases.BaseTestBot):
               

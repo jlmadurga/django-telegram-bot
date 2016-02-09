@@ -22,7 +22,7 @@ class TemplateCommandView(object):
 #             logger.debug("Text:" + str(text.encode('utf-8')))
 #             logger.debug("Keyboard:" + str(keyboard))
             if text:
-                bot.sendMessage(chat_id=update.message.chat_id, text=text.encode('utf-8'), reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+                bot.send_message(chat_id=update.message.chat_id, text=text.encode('utf-8'), reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
             else:
                 logger.info("No text response for update %s" % str(update))
         except:
@@ -32,7 +32,7 @@ class TemplateCommandView(object):
 
     @classmethod
     def as_command_view(cls, **initkwargs):
-        def view(bot, update, groupdict=None, **kwargs):
+        def view(bot, update, **kwargs):
             self = cls(**initkwargs)
-            return self.handle(bot, update, pattern=groupdict, **kwargs)
+            return self.handle(bot, update, **kwargs)
         return view
