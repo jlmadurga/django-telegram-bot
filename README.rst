@@ -56,15 +56,15 @@ Add webhook url to your urlpatterns::
 
 	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")	
 
-Define whe file where commands will be defined in ``bothandlers`` variable, analogue to django ``urls``
+Define whe file where commands will be defined in ``urlpatterns`` variable, analogue to django ``urls``
 and ``ROOT_URLCONF``::
 
 	TELEGRAM_BOT_HANDLERS_CONF = "app.handlers"
 	
-Set bot commands handlers is very easy just as defining `urls` in django. Module with ``bothandlers`` that list 
-different handlers::
+Set bot commands handlers is very easy just as defining `urls` in django. Module with ``urlpatterns`` that list 
+different handlers. You can `regex` directly or use shortcuts like `command` or `unknown_command` ::
 
-	bothandlers = [command('start', StartView.as_command_view()),
+	urlpatterns = [command('start', StartView.as_command_view()),
                	   command('author', AuthorCommandView.as_command_view()),
                	   command('author_inverse', AuthorInverseListView.as_command_view()),
                    command('author_query', login_required(AuthorCommandQueryView.as_command_view())),
