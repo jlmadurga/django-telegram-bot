@@ -5,7 +5,7 @@ import traceback
 import logging
 
 logger = logging.getLogger(__name__)
-
+PY3 = sys.version_info > (3,)
 
 class TemplateCommandView(object):
     template_text = None
@@ -22,7 +22,9 @@ class TemplateCommandView(object):
 #             logger.debug("Text:" + str(text.encode('utf-8')))
 #             logger.debug("Keyboard:" + str(keyboard))
             if text:
-                bot.send_message(chat_id=update.message.chat_id, text=text.encode('utf-8'), reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+                if not PY3:
+                    text = text.encode('utf-8')
+                bot.send_message(chat_id=update.message.chat_id, text=text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
             else:
                 logger.info("No text response for update %s" % str(update))
         except:
