@@ -10,7 +10,9 @@ try:
     from unittest import mock
 except ImportError:
     import mock  # noqa
-
+import sys    
+    
+PY3 = sys.version_info > (3,)
 
 class BaseTestBot(TestCase):    
 
@@ -64,7 +66,8 @@ class BaseTestBot(TestCase):
             self.assertTrue(isinstance(kwargs['reply_markup'], ReplyKeyboardHide))
         else:
             self.assertInKeyboard(command['out']['reply_markup'], kwargs['reply_markup'].keyboard)
-                
+        if not PY3:
+            kwargs['text'] = kwargs['text'].decode('utf-8')
         self.assertIn(command['out']['text'], kwargs['text'].decode('utf-8'))
         
     def _test_message_ok(self, action, update=None, number=1):
