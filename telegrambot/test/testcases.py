@@ -68,7 +68,7 @@ class BaseTestBot(TestCase):
             self.assertInKeyboard(command['out']['reply_markup'], kwargs['reply_markup'].keyboard)
         if not PY3:
             kwargs['text'] = kwargs['text'].decode('utf-8')
-        self.assertIn(command['out']['text'], kwargs['text'].decode('utf-8'))
+        self.assertIn(command['out']['text'], kwargs['text'])
         
     def _test_message_ok(self, action, update=None, number=1):
         if not update:
