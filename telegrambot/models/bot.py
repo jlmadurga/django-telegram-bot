@@ -23,7 +23,7 @@ class Bot(models.Model):
     ssl_certificate = models.FileField(_("SSL certificate"), upload_to='telegrambot/ssl/', 
                                        blank=True, null=True)
     enabled = models.BooleanField(_('Enable'), default=True)
-    created = models.DateTimeField(('Date Created'), auto_now_add=True)
+    created = models.DateTimeField(_('Date Created'), auto_now_add=True)
     modified = models.DateTimeField(_('Date Modified'), auto_now=True)    
     
     class Meta:
