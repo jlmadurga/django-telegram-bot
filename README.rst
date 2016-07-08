@@ -27,6 +27,8 @@ Docs:
 
 Django app to write Telegram bots. Just define commands and how to handle them.
 
+**Try Permabots**: more stable django app for bots https://github.com/jlmadurga/permabots
+
 NOTE: Just for text messages at this moment.
 
 Documentation
