@@ -32,6 +32,7 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
     from_ = UserSerializer(many=False, source="from_user")
     chat = ChatSerializer(many=False)
     date = TimestampField()
+    text = serializers.CharField(required=True)
     
     def __init__(self, *args, **kwargs):
         super(MessageSerializer, self).__init__(*args, **kwargs)
