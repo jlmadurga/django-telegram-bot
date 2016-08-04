@@ -80,7 +80,7 @@ in settings and with it correct value in the DB. The webhook for each bot is set
 	
 Bot views responses with Telegram messages to the user who send the command with a text message and keyboard.
 Compound with a context and a template. The way it is handled is analogue to Django views.  Visits docs for more 
-details https://django-telegram-bot.readthedocs.org/usage.html
+details https://django-telegram-bot.readthedocs.io/en/latest/usage.html
 
 
 Features
