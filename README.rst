@@ -56,7 +56,7 @@ Heroku has https and ssl by default so it is a good option if you dont want to d
 
 Add webhook url to your urlpatterns::
 
-	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")	
+	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")),	
 
 Define whe file where commands will be defined in ``urlpatterns`` variable, analogue to django ``urls``
 and ``ROOT_URLCONF``::
