@@ -58,7 +58,7 @@ Add webhook url to your urlpatterns::
 
 	url(r'^telegrambot/', include('telegrambot.urls', namespace="telegrambot")),	
 
-Define whe file where commands will be defined in ``urlpatterns`` variable, analogue to django ``urls``
+Define the file where commands will be defined in ``urlpatterns`` variable, analogue to django ``urls``
 and ``ROOT_URLCONF``::
 
 	TELEGRAM_BOT_HANDLERS_CONF = "app.handlers"
