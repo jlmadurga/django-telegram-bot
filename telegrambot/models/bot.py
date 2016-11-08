@@ -77,7 +77,10 @@ def set_api(sender, instance, **kwargs):
     #  complete  Bot instance with api data
     if not instance.user_api:
         bot_api = instance._bot.getMe()
-        user_api, _ = User.objects.get_or_create(**bot_api.to_dict())
+        user_dict = bot_api.to_dict()
+        user_fields = [field.name for field in User._meta.get_fields(include_parents=False, include_hidden=False)]
+        safe_dict = {key: value for key, value in user_dict.items() if key in user_fields}
+        user_api, _ = User.objects.get_or_create(**safe_dict)
         instance.user_api = user_api
         instance.save()
         logger.info("Success: Bot api info for bot %s set" % str(instance))

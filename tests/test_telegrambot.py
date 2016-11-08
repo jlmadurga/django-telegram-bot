@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from itertools import chain, combinations
+from telegram import User as TelegramUser, Bot as TelegramBot
 from telegrambot.models import User, Chat, Bot, AuthToken
 from telegrambot.test import factories, testcases   
 from factory import DjangoModelFactory, Sequence
@@ -16,8 +18,15 @@ except ImportError:
     
     
 ModelUser = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
-    
-    
+
+
+def powerset(iterable):
+    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    # https://docs.python.org/2/library/itertools.html
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
+
+
 class AuthorFactory(DjangoModelFactory):
     class Meta:
         model = Author
@@ -50,7 +59,25 @@ class TestBot(testcases.BaseTestBot):
             self.bot.save()
             self.assertEqual(self.bot.user_api.first_name, u'oscartest')
             self.assertEqual(self.bot.user_api.username, u'oscartest_bot')
-            
+
+    def test_bot_user_api_with_optional_fields(self):
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()):
+            optional_dict = {'last_name': 'oscar_lastname'}
+            optional_keys = optional_dict.keys()
+            for keys in powerset(optional_keys):
+                test_dict = dict(first_name=u'oscartest', username=u'oscartest_bot')
+                for key in keys:
+                    test_dict[key] = optional_dict[key]
+                # print(test_dict)
+                tg_user = TelegramUser(test_dict)
+                with mock.patch.object(TelegramBot, 'getMe', return_value=tg_user) \
+                        as mock_getMe:
+                    self.bot.user_api = None
+                    self.bot.save()
+                    for key, value in test_dict.items():
+                        self.assertEqual(self.bot.user_api.getattr(key), value)
+                mock_getMe.assert_called_once_with()
+
     def test_no_bot_associated(self):
         Bot.objects.all().delete()
         self.assertEqual(0, Bot.objects.count())
