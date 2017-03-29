@@ -69,7 +69,9 @@ def set_api(sender, instance, **kwargs):
         current_site = Site.objects.get_current()
         url = 'https://' + current_site.domain + webhook   
     if instance.ssl_certificate:
-        cert = instance.ssl_certificate.open()
+        instance.ssl_certificate.open()
+        cert = instance.ssl_certificate
+
     instance._bot.setWebhook(webhook_url=url, 
                              certificate=cert)
     logger.info("Success: Webhook url %s for bot %s set" % (url, str(instance)))
