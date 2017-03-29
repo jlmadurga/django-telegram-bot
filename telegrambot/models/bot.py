@@ -49,16 +49,15 @@ class Bot(models.Model):
         else:
             callback, callback_args, callback_kwargs = resolver_match
             callback(self, update, **callback_kwargs)
-        
+
     def send_message(self, chat_id, text, parse_mode=None, disable_web_page_preview=None, **kwargs):
         self._bot.sendMessage(chat_id=chat_id, text=text, parse_mode=parse_mode, 
                               disable_web_page_preview=disable_web_page_preview, **kwargs)        
 
 @receiver(post_save, sender=Bot)
 def set_api(sender, instance, **kwargs):
-    #  set bot api if not yet
-    if not instance._bot:
-        instance._bot = BotAPI(instance.token)
+    #  Always reset the _bot instance after save, in case the token changes.
+    instance._bot = BotAPI(instance.token)
 
     # set webhook
     url = None
