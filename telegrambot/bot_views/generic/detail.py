@@ -1,4 +1,4 @@
-from telegrambot.bot_views.generic.base import TemplateCommandView
+from telegrambot.bot_views.generic.message import TemplateCommandView
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist,\
     FieldError
 

@@ -1,16 +1,20 @@
-from telegrambot.bot_views.generic.base import TemplateCommandView
+from telegrambot.bot_views.generic.base import BaseCommandView
 
-class ListDetailCommandView(TemplateCommandView):
+class ListDetailCommandView(BaseCommandView):
     list_view_class = None
     detail_view_class = None
-    
+
     @classmethod
-    def as_command_view(cls, **initkwargs):
+    def as_command_view(cls, *initargs, **initkwargs):
         def view(bot, update, **kwargs):
             command_args = update.message.text.split(' ')
+            args = []
+
             if len(command_args) > 1:
-                self = cls.detail_view_class(command_args[1])
+                class_ = cls.detail_view_class
+                args.append(command_args[1])
             else:
-                self = cls.list_view_class()
-            return self.handle(bot, update, **kwargs)
+                class_ = cls.list_view_class
+
+            return class_.as_command_view(*args)(bot, update, **kwargs)
         return view
