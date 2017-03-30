@@ -77,7 +77,16 @@ def set_api(sender, instance, **kwargs):
     #  complete  Bot instance with api data
     if not instance.user_api:
         bot_api = instance._bot.getMe()
-        user_api, _ = User.objects.get_or_create(**bot_api.to_dict())
+
+        botdict = bot_api.to_dict()
+        modelfields = [f.name for f in User._meta.get_fields()]
+        params = {k: botdict[k] for k in botdict.keys() if k in modelfields}
+        user_api, _ = User.objects.get_or_create(**params)
         instance.user_api = user_api
+
+        # Prevent signal recursion, and save.
+        post_save.disconnect(set_api, sender=sender)
         instance.save()
+        post_save.connect(set_api, sender=sender)
+
         logger.info("Success: Bot api info for bot %s set" % str(instance))
