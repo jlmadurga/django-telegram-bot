@@ -1,6 +1,6 @@
 from django.template import RequestContext, TemplateDoesNotExist
 from django.template.loader import get_template
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardHide
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import ast
 import logging
 from django.http.request import HttpRequest
@@ -45,5 +45,5 @@ class KeyboardResponse(TemplateResponse):
             keyboard = ast.literal_eval(keyboard)
             keyboard = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
         else:
-            keyboard = ReplyKeyboardHide()
+            keyboard = ReplyKeyboardRemove()
         return keyboard

@@ -5,7 +5,7 @@ from telegrambot.models import Update
 from telegrambot.test import factories
 from django.core.urlresolvers import reverse
 from rest_framework import status
-from telegram.replykeyboardhide import ReplyKeyboardHide
+from telegram import ReplyKeyboardRemove
 try:
     from unittest import mock
 except ImportError:
@@ -17,7 +17,8 @@ PY3 = sys.version_info > (3,)
 class BaseTestBot(TestCase):    
 
     def setUp(self):
-        self.bot = factories.BotFactory()
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()):
+            self.bot = factories.BotFactory()
         self.webhook_url = reverse('telegrambot:webhook', kwargs={'token': self.bot.token})
         self.auth_url = reverse('telegrambot:auth', kwargs={'bot': self.bot.user_api.username})
         self.update = factories.UpdateLibFactory()
@@ -63,7 +64,7 @@ class BaseTestBot(TestCase):
         self.assertEqual(kwargs['chat_id'], self.update.message.chat.id)
         self.assertEqual(kwargs['parse_mode'], command['out']['parse_mode'])
         if not command['out']['reply_markup']:
-            self.assertTrue(isinstance(kwargs['reply_markup'], ReplyKeyboardHide))
+            self.assertTrue(isinstance(kwargs['reply_markup'], ReplyKeyboardRemove))
         else:
             self.assertInKeyboard(command['out']['reply_markup'], kwargs['reply_markup'].keyboard)
         if not PY3:

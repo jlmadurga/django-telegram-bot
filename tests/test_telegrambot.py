@@ -17,7 +17,6 @@ except ImportError:
     
 ModelUser = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
     
-    
 class AuthorFactory(DjangoModelFactory):
     class Meta:
         model = Author
@@ -225,7 +224,7 @@ class TestLoginRequiredBotView(testcases.BaseTestBot):
     def test_login_required_already_auth(self):
         token = factories.AuthTokenFactory()
         token.save()
-        chat, _ = Chat.objects.get_or_create(**self.update.message.chat.to_dict())
+        chat, _ = self.chat_get_or_create()
         token.chat_api = chat
         token.save()
         AuthorFactory(name="author_1")
@@ -235,11 +234,18 @@ class TestLoginRequiredBotView(testcases.BaseTestBot):
     def test_login_required_expired_token(self):
         token = factories.AuthTokenFactory()
         token.save()
-        chat, _ = Chat.objects.get_or_create(**self.update.message.chat.to_dict())
+        chat, _ = self.chat_get_or_create()
         token.chat_api = chat
         token.save()
         AuthorFactory(name="author_1")
         self._test_message_ok(self.author_login_required_not_auth)
+
+    def chat_get_or_create(self):
+        data = self.update.message.chat.to_dict()
+        modelfields = [f.name for f in Chat._meta.get_fields()]
+        params = {k: data[k] for k in data.keys() if k in modelfields}
+        return Chat.objects.get_or_create(**params)
+
         
 class TestAuthView(testcases.BaseTestBot):  
     
@@ -248,7 +254,8 @@ class TestAuthView(testcases.BaseTestBot):
                  'password': 'password'}
     
     def test_token_creation(self):
-        self.bot.save()
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()):
+            self.bot.save()
         user = ModelUser.objects.create_user(**self.user_args)
         self.client.login(username=self.user_args['username'], password=self.user_args['password'])
         response = self.client.get(self.auth_url)  
@@ -260,7 +267,8 @@ class TestAuthView(testcases.BaseTestBot):
     
     @override_settings(TELEGRAM_BOT_TOKEN_EXPIRATION='-1')
     def test_token_expired(self):
-        self.bot.save()
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()):
+            self.bot.save()
         user = ModelUser.objects.create_user(**self.user_args)
         token = AuthToken.objects.create(user=user)
         self.assertTrue(token.expired())
@@ -272,7 +280,8 @@ class TestAuthView(testcases.BaseTestBot):
         self.assertEqual(user, new_token.user)     
         
     def test_token_chat_association(self):
-        self.bot.save()    
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()):
+            self.bot.save()
         user = ModelUser.objects.create_user(**self.user_args)
         token = AuthToken.objects.create(user=user)
         start_authenticated = {'in': '/start %s' % token.key,
