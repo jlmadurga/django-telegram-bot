@@ -128,6 +128,10 @@ class TestBotCommands(testcases.BaseTestBot):
                        'text': 'Good, thanks!'}
                }
 
+    template_missing = {'in': '/missing',
+                        'out': None
+                       }
+
     def test_start(self):
         self._test_message_ok(self.start)
         
@@ -176,6 +180,9 @@ class TestBotCommands(testcases.BaseTestBot):
 
     def test_message(self):
         self._test_message_ok(self.message)
+
+    def test_missing_template(self):
+        self._test_no_response(self.template_missing)
 
 
 class TestBotMessage(testcases.BaseTestBot): 
