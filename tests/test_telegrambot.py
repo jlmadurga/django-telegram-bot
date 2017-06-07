@@ -33,7 +33,15 @@ class TestBot(testcases.BaseTestBot):
             self.assertIn(reverse('telegrambot:webhook', kwargs={'token': self.bot.token}), 
                           kwargs['webhook_url'])
             self.assertEqual(None, kwargs['certificate'])
-            
+
+    def test_custom_webhook_https_port(self):
+        self.bot.https_port = 8443
+        with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()) as mock_setwebhook:
+            self.bot.save()
+            args, kwargs = mock_setwebhook.call_args
+            self.assertIn(':8443' + reverse('telegrambot:webhook', kwargs={'token': self.bot.token}),
+                          kwargs['webhook_url'])
+
     def test_disable_webhook(self):
         self.bot.enabled = False
         with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()) as mock_setwebhook:
