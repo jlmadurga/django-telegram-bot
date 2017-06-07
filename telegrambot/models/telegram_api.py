@@ -15,7 +15,12 @@ class User(models.Model):
         verbose_name_plural = _('Users')
 
     def __str__(self):
-        return "%s" % self.first_name
+        if self.first_name:
+            return "%s" % self.first_name
+        elif self.username:
+            return "%s" % self.username
+        else:
+            return "%d" % self.id
 
 @python_2_unicode_compatible
 class Chat(models.Model):
