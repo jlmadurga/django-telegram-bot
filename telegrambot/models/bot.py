@@ -22,6 +22,9 @@ class Bot(models.Model):
                                     on_delete=models.CASCADE, blank=True, null=True)
     ssl_certificate = models.FileField(_("SSL certificate"), upload_to='telegrambot/ssl/', 
                                        blank=True, null=True)
+    https_port = models.PositiveIntegerField(_('Webhook HTTPS port'), blank=True,
+                                             null=True, default=None,
+                                             help_text=_('Leave empty if the bot webhook is published at the standard HTTPS port (443).'))
     enabled = models.BooleanField(_('Enable'), default=True)
     created = models.DateTimeField(_('Date Created'), auto_now_add=True)
     modified = models.DateTimeField(_('Date Modified'), auto_now=True)    
@@ -66,7 +69,10 @@ def set_api(sender, instance, **kwargs):
         webhook = reverse('telegrambot:webhook', kwargs={'token': instance.token})        
         from django.contrib.sites.models import Site
         current_site = Site.objects.get_current()
-        url = 'https://' + current_site.domain + webhook   
+        if instance.https_port is None:
+            url = 'https://' + current_site.domain + webhook
+        else:
+            url = 'https://' + current_site.domain + ':' + str(instance.https_port) + webhook
     if instance.ssl_certificate:
         instance.ssl_certificate.open()
         cert = instance.ssl_certificate
