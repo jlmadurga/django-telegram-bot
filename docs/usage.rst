@@ -50,7 +50,8 @@ Simple view just with a template, image /start command just to wellcome::
 
 List and detail views::
 
-	class AuthorListView(ListCommandView):
+
+    class AuthorListView(ListCommandView):
     	template_text = "bot/messages/command_author_list_text.txt"
     	template_keyboard = "bot/messages/command_author_list_keyboard.txt"
     	model = Author
