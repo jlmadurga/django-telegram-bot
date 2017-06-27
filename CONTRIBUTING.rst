@@ -3,7 +3,7 @@ Contributing
 ============
 
 Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given. 
+little bit helps, and credit will always be given.
 
 You can contribute in many ways:
 
@@ -36,7 +36,7 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-django-telegram-bot could always use more documentation, whether as part of the 
+django-telegram-bot could always use more documentation, whether as part of the
 official django-telegram-bot docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
@@ -77,11 +77,11 @@ Now you can make your changes locally.
 5. When you're done making changes, check that your changes pass flake8 and the
 tests, including testing other Python versions with tox::
 
-	$ pip install -r requirements/dev.txt
+    $ pip install -r requirements/dev.txt
     $ make lint
     $ pip install -r requirements/test.txt
     $ make test
-    $ make test all
+    $ make test-all
 
 
 6. Commit your changes and push your branch to GitHub::
@@ -101,7 +101,7 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 2.7, adn Python3. Check 
+3. The pull request should work for Python 2.7, and Python3. Check
    https://travis-ci.org/jlmadurga/django-telegram-bot/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
