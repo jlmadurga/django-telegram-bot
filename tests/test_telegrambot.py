@@ -118,7 +118,28 @@ class TestBotCommands(testcases.BaseTestBot):
                                    'text': "Author name:author_1"
                                    }   
                            }
-        
+    echo = {'in': 'Echo this message',
+            'out': {'parse_mode': 'Markdown',
+                    'reply_markup': '',
+                    'text': 'Echo this message'}
+            }
+
+    hello_world = {'in': '/hello',
+                   'out': {'parse_mode': 'Markdown',
+                           'reply_markup': '',
+                           'text': 'Hello World!'}
+                   }
+
+    message = {'in': '/how_are_you',
+               'out': {'parse_mode': 'Markdown',
+                       'reply_markup': '',
+                       'text': 'Good, thanks!'}
+               }
+
+    template_missing = {'in': '/missing',
+                        'out': None
+                       }
+
     def test_start(self):
         self._test_message_ok(self.start)
         
@@ -158,7 +179,20 @@ class TestBotCommands(testcases.BaseTestBot):
         self._test_message_ok(self.unknown, update_2, 2)
         self.assertEqual(User.objects.count(), 2)  # bot user
         self.assertEqual(Chat.objects.count(), 1)
-        
+
+    def test_echo(self):
+        self._test_message_ok(self.echo)
+
+    def test_hello_world(self):
+        self._test_message_ok(self.hello_world)
+
+    def test_message(self):
+        self._test_message_ok(self.message)
+
+    def test_missing_template(self):
+        self._test_no_response(self.template_missing)
+
+
 class TestBotMessage(testcases.BaseTestBot): 
        
     any_message = {'out': {'parse_mode': 'Markdown',

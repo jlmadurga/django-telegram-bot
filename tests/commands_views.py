@@ -48,3 +48,6 @@ class AuthorName(DetailCommandView):
     
     def get_slug(self, **kwargs):
         return kwargs.get('name', None)
+
+class MissingTemplateView(TemplateCommandView):
+    template_text = "i/dont/exist.txt"

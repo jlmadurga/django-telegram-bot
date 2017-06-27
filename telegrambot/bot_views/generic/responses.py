@@ -30,9 +30,7 @@ class TemplateResponse(object):
         return template.render(ctx)
     
 class TextResponse(TemplateResponse):
-
-    def __init__(self, template_text, ctx=None):
-        super(TextResponse, self).__init__(template_text, ctx)
+    pass
         
 class KeyboardResponse(TemplateResponse):
     

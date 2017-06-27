@@ -38,12 +38,18 @@ in settings and with it correct value in the DB. The webhook for each bot is set
 ``enabled`` field is set to true.
 
 	
-Bot views responses with Telegram messages to the user with a text message and keyboard.
-Compound with a context and a template. The way it is handled is analogue to Django views. 
+The bot views inheriting from ``SendMessageCommandView`` respond with Telegram messages
+including a text message and keyboard. Defining a bot view is really easy using generic
+classed views, analogues to django generic views. Alternatively, if you need to respond
+with a simple message, you can init ``SendMessageCommandView`` just like so::
 
-Define  a bot view is really easy using generic classed views, analogues to django generic views.
+  urlpatterns = [
+    ...
+    command('/say_hi', SendMessageCommandView.as_command_view(message='Hi there!'))
+    ...
+  ]
 
-Simple view just with a template, image /start command just to wellcome::
+A simple view just based on a template, image /start command just to welcome::
 
 	class StartView(TemplateCommandView):
    		template_text = "bot/messages/command_start_text.txt"
@@ -74,6 +80,16 @@ getting detail of one concrete element. It is easy to define::
 Templates works just as normal django app. In /start command example it will search in templates dirs 
 for ``bot/messages/command_start_text.txt`` to compound response message and 
 ``bot/messages/command_start_keyboard.txt``.
+
+For testing, you can use the ``EchoCommandView`` and ``HelloWorldCommandView`` views::
+
+  from telegrambot.bot_views.generic import EchoCommandView, HelloWorldCommandView
+  from telegrambot.handlers import unknown_command, message
+
+  urlpatterns = [
+    unknown_command(HelloWorldCommandView.as_command_view()),
+    message(EchoCommandView.as_command_view())
+  ]
 
 Authentication
 -------------------------

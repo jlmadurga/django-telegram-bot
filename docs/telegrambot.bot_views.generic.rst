@@ -36,6 +36,14 @@ telegrambot.bot_views.generic.list module
     :undoc-members:
     :show-inheritance:
 
+telegrambot.bot_views.generic.message module
+--------------------------------------------
+
+.. automodule:: telegrambot.bot_views.generic.message
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 telegrambot.bot_views.generic.responses module
 ----------------------------------------------
 
