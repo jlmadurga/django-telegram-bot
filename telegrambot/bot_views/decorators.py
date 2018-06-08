@@ -1,7 +1,9 @@
 from functools import wraps
 from telegrambot.models import Chat, Bot
-from django.core.urlresolvers import reverse
-
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 def login_required(view_func):
     """

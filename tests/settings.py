@@ -22,6 +22,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 
 )
+MIDDLEWARE = MIDDLEWARE_CLASSES
 SECRET_KEY = "shds8dfyhskdfhskdfhskdf"
 
 LOGGING = {
@@ -46,14 +47,14 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
-    },     
+    },
     'loggers': {
         'telegrambot.views': {
             'handlers': ['console'],
             'propagate': False,
             'level': 'DEBUG',
         },
-    }   
+    }
 }
 
 TEMPLATES = [

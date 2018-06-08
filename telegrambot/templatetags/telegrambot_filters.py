@@ -5,7 +5,7 @@ register = template.Library()
 @register.filter(name='keyboard_field')
 def keyboard_field(value, args=None):
     """
-    Format keyboard /command field. 
+    Format keyboard /command field.
     """
     qs = QueryDict(args)
     per_line = qs.get('per_line', 1)
@@ -16,5 +16,5 @@ def keyboard_field(value, args=None):
     grouped = group(value, int(per_line))
     new_list = []
     for line in grouped:
-        new_list.append([convert(e) for e in line])     
-    return str(new_list).encode('utf-8')
+        new_list.append([convert(e) for e in line])
+    return new_list
