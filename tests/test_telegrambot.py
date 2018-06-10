@@ -5,9 +5,9 @@ from telegrambot.test import factories, testcases
 from factory import DjangoModelFactory, Sequence
 from tests.models import Author
 try:
-	from django.urls import reverse
+    from django.urls import reverse
 except ImportError:
-	from django.core.urlresolvers import reverse
+    from django.core.urlresolvers import reverse
 from rest_framework import status
 from django.test.utils import override_settings
 from django.conf import settings

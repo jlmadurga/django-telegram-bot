@@ -4,9 +4,9 @@ from django.test import TestCase
 from telegrambot.models import Update
 from telegrambot.test import factories
 try:
-	from django.urls import reverse
+    from django.urls import reverse
 except ImportError:
-	from django.core.urlresolvers import reverse
+    from django.core.urlresolvers import reverse
 from rest_framework import status
 from telegram import ReplyKeyboardRemove
 try:

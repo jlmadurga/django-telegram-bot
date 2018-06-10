@@ -10,13 +10,11 @@ ROOT_URLCONF="tests.urls"
 INSTALLED_APPS=[
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sites",
     'django.contrib.sessions',
     "rest_framework",
     "telegrambot",
     "tests"
 ]
-SITE_ID=1
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -67,3 +65,4 @@ TEMPLATES = [
 
 TELEGRAM_BOT_HANDLERS_CONF = "tests.bot_handlers"
 TELEGRAM_BOT_TOKEN_EXPIRATION = "2" # tow hours before a token expires
+TELEGRAM_BOT_SITE_DOMAIN = "example.com"
