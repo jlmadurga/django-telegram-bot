@@ -19,8 +19,8 @@ PY3 = sys.version_info > (3,)
 
 class BaseTestBot(TestCase):
 
-    @mock.patch('telegrambot.models.bot.set_api')
-    def _create_bot(self, mock_set_api):
+    @mock.patch('telegrambot.bot.Bot.getMe')
+    def _create_bot(self, mock_getMe):
         with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()):
             self.bot = factories.BotFactory()
 
