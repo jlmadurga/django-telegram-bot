@@ -19,9 +19,13 @@ PY3 = sys.version_info > (3,)
 
 class BaseTestBot(TestCase):
 
-    def setUp(self):
+    @patch('telegrambot.models.bot.set_api')
+    def _create_bot(self, mock_set_api):
         with mock.patch("telegram.bot.Bot.setWebhook", callable=mock.MagicMock()):
             self.bot = factories.BotFactory()
+
+    def setUp(self):
+        sefl._create_bot()
         self.webhook_url = reverse('telegrambot:webhook', kwargs={'token': self.bot.token})
         self.auth_url = reverse('telegrambot:auth', kwargs={'bot': self.bot.user_api.username})
         self.update = factories.UpdateLibFactory()
