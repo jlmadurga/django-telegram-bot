@@ -10,7 +10,7 @@ class ListDetailCommandView(TemplateCommandView):
             try:
                 command_args = update.message.text.split(' ')
             except AttributeError:
-                command_args = update.callback_query.message.text.split(' ')
+                command_args = update.callback_query.data.split(' ')
             if len(command_args) > 1:
                 self = cls.detail_view_class(command_args[1])
             else:

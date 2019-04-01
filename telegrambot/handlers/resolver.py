@@ -22,7 +22,7 @@ class HandlerResolver(object):
             resolver_match = self.resolver.resolve(update.message.text)
             return resolver_match
         except AttributeError:
-            resolver_match = self.resolver.resolve(update.callback_query.message.text)
+            resolver_match = self.resolver.resolve(update.callback_query.data)
             return resolver_match
         except Resolver404:
             raise HandlerNotFound("No handler configured for  %s" % update.message.text)
