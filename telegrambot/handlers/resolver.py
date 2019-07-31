@@ -1,4 +1,4 @@
-from django.urls import RegexURLResolver
+from django.urls import URLResolver
 from django.urls import Resolver404
 
 class HandlerNotFound(Exception):
