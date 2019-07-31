@@ -1,5 +1,5 @@
-from django.core.urlresolvers import RegexURLResolver
-from django.core.urlresolvers import Resolver404
+from django.urls import RegexURLResolver
+from django.urls import Resolver404
 
 class HandlerNotFound(Exception):
     pass
