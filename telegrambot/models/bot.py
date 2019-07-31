@@ -6,7 +6,7 @@ from django.conf import settings
 from telegram import Bot as BotAPI
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 import logging
 from telegrambot.models import User
 from telegrambot.handlers import HandlerResolver
