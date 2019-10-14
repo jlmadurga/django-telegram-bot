@@ -10,15 +10,20 @@ python:
 
 
 env:
+  - DJANGO_VERSION=2.0
+  - DJANGO_VERSION=1.11
   - DJANGO_VERSION=1.10
-  - DJANGO_VERSION=1.9
-  - DJANGO_VERSION=1.8
+
+matrix:
+  exclude:
+    - python: "2.7"
+      env: DJANGO_VERSION=2.0
 
 before_install:
   - pip install coveralls
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: 
+install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -r requirements/test.txt
 

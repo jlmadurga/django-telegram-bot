@@ -24,13 +24,19 @@ class TemplateCommandView(object):
             if text:
                 if not PY3:
                     text = text.encode('utf-8')
-                bot.send_message(chat_id=update.message.chat_id, text=text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+                try:
+                    bot.send_message(chat_id=update.message.chat_id, text=text, reply_markup=keyboard, parse_mode=ParseMode.MARKDOWN)
+                except AttributeError:
+                    self.handle_callback_query(bot, update, **kwargs)
             else:
                 logger.info("No text response for update %s" % str(update))
         except:
             exc_info = sys.exc_info()
             traceback.print_exception(*exc_info)
             raise
+
+    def handle_callback_query(self, bot, update, **kwargs):
+        raise NotImplementedError('Implement this to handle callback queries, which are received when an InlineKeyboard is clicked')
 
     @classmethod
     def as_command_view(cls, **initkwargs):

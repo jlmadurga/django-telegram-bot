@@ -9,6 +9,7 @@ class UserLibFactory(Factory):
     class Meta:
         model = telegram.User
     id = Sequence(lambda n: n+1)
+    is_bot = False
     first_name = Sequence(lambda n: 'first_name_%d' % n)
     last_name = Sequence(lambda n: 'last_name_%d' % n)
     username = Sequence(lambda n: 'username_%d' % n)
@@ -30,7 +31,7 @@ class MessageLibFactory(Factory):
     from_user = SubFactory(UserLibFactory)
     date = timezone.now()
     chat = SubFactory(ChatLibFactory)
-    text = FuzzyText()    
+    text = FuzzyText()
 
 class UpdateLibFactory(Factory):
     class Meta:
