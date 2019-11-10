@@ -47,7 +47,7 @@ setup(
     install_requires=[
         'django>=1.8.0',
         'python-telegram-bot==5.3.0',
-        'djangorestframework==3.3.2',
+        'djangorestframework==3.9.1',
     ],
     license="BSD",
     zip_safe=False,
