@@ -1,6 +1,6 @@
 -r base.txt
 bumpversion==0.5.3
-wheel==0.26.0
+wheel==0.38.1
 Sphinx==1.3.5
 coverage
 flake8>=2.1.0
